@@ -43,9 +43,9 @@
 
 우리는 이 **공간은 왜곡시키지 않으면서 색상 부분만 변형** 하여 실제 사진처럼 보이도록 하였다.
 
-**우리는 [Matting Laplacian](http://webee.technion.ac.il/people/anat.levin/papers/Matting-Levin-Lischinski-Weiss-CVPR06.pdf) 에서 영감을 얻어, 색상 공간에서 지역적으로 affine 을 갖는 변환 모델로 구현한다.**
+**우리는 [Matting Laplacian](http://webee.technion.ac.il/people/anat.levin/papers/Matting-Levin-Lischinski-Weiss-CVPR06.pdf) 에서 영감을 얻어, 색상 공간에서 지역적으로 affine 을 갖는 변환 모델로 구현하였다.**
 
-이 방법은 변형 faithfulness에 미치는 영향을 최소화함으로써 왜곡을 방지한다.
+변형 faithfulness에 미치는 영향을 최소화함으로써 왜곡을 방지한 것이다.
 
 &nbsp;
 
@@ -65,7 +65,7 @@
 
 입력사진의 시간대를 바꿀 수 있고 날씨도 바꿀 수 있으며, 예술적으로 수정할수도 있는 등 많은 응용 분야에 쓰일 수 있다.
 
-이러한 결과를 얻기 위해서 **두 가지 근본적인 문제** 를 해결해야 했다.
+이러한 결과를 얻기 위해서 **두 가지 근본적인 문제** 를 해결했다. (`Neural Style Transfer` 는 아래 두가지 문제를 가짐)
 
 &nbsp;
 
@@ -79,22 +79,26 @@
 
 우리의 과제에는 본질적으로 주의해야 할 것이 있다.
 
-먼저, 위 사진에서 빌딩의 창문들은 밝아진다.
+먼저, 위 빌딩의 창문들을 밝아지게끔 한다.
 
 하지만 이러한 효과를 줄 때 창문의 모양을 변경시켜서는 안된다. 모서리 및 규칙적인 패턴을 왜곡해서도 안된다.
 
-이미지 색상은 변형하지만, 공간적인 왜곡은 없어야 한다.
+**이미지 색상은 변형하지만, 공간적인 왜곡은 없어야 한다.**
 
 &nbsp;
+
+**해결 시도 1.**
 
 [pager - Color Transfer
 between Images](https://www.cs.tau.ac.il/~turkel/imagepapers/ColorTransfer.pdf) 에서는 전체적인 색상 변환으로 이 문제를 해결했다.
 
-그러나 부분적으로 변환시킬 수 없기 때문에, 원하는 스타일을 적용하기에는 제한적이다.
+그러나 여기서는 공간을 부분적으로 변환시킬 수 없기 때문에, 원하는 스타일을 적용하기에는 제한적이다.
 
 다양한 스타일을 적용할수록 공간적인 왜곡 또한 커진다.
 
 &nbsp;
+
+**해결 시도 2.**
 
 [Transient
 attributes for high-level understanding and editing of outdoor
@@ -102,7 +106,9 @@ scenes](), [Data-driven
 hallucination of different times of day from a single outdoor
 photo]()
 
-위 두 연구에서는 특정 시나리오에 대한 몇 가지 기술은 존재하지만, 일반적인 경우에는 역시 부적절한 방법들이다.
+위 두 연구에서는 특정 시나리오에 한해서 몇 가지 해결책이 존재한다.
+
+하지만, 일반적인 경우에는 역시 부적절하다.
 
 &nbsp;
 
@@ -122,7 +128,7 @@ photo]()
 
 이미지는 각 장면의 의미를 충실히 표현해야 한다.
 
-예를 들어, 위 사진의 건물은 건물다워야 하고 하늘은 하늘다워야 한다.
+예를 들어, 위 사진의 건물은 건물 다워야 하고 하늘은 하늘 다워야 한다.
 
 제일 오른쪽 사진처럼 하늘을 건물처럼 표현해서는 안된다.
 
