@@ -1,1 +1,0 @@
-# Deep Photo Style Transfer
