@@ -216,7 +216,7 @@ photo]()
 
 &nbsp;
 
-#### 배경지식
+### 배경지식
 
 완벽을 위해 `Gatys et al.의 Neural Style Algorithm`을 잠깐 살펴보도록 하자.
 
@@ -242,7 +242,7 @@ photo]()
 
 &nbsp;
 
-#### Photorealism regularization
+### Photorealism regularization
 
 **여기서는 입력 이미지의 구조는 유지시키고 사실적으로 출력을 생성하기 위해 어떻게 최적화 스키마를 정규화 하는지를 설명하겠다.**
 
@@ -282,7 +282,7 @@ N 픽셀, MI는 N × N). 우리는 Vc [O]를 채널 C의 출력 이미지 O의 �
 
 &nbsp;
 
-#### Augmented style loss with semantic segmentation
+### Augmented style loss with semantic segmentation
 
 **(Eq. 1c)의 문제는 Gram matrix가 전체 이미지에 대해 계산된다는 점이다.**
 
@@ -314,7 +314,7 @@ mask in layer '이고, G`, c [·]는 대응하는 그램 행렬이다
 
 &nbsp;
 
-#### Out approach
+### Out approach
 
 우리는 3 가지 구성 요소를 모두 결합하여 `photorealistic style transfer objective`를 공식화하였다.
 
@@ -386,7 +386,113 @@ photorealism regularization term의 파생물은 gradient-based optimization을 
 
 ## 4. Results and Comparison
 
+우리의 방법을 검증하기 위해 몇 가지를 실험했다.
 
+먼저 두 가지 사용자 연구 결과를 보고하기 전에 이전 연구들과 Ours를 사진으로 비교해보도록 하자.
+
+2개의 유저 스터디들을 리포팅 하기 전에 이전의 연구들을 먼저 비교해보자.
+
+&nbsp;
+
+### 왜곡
+
+![](assets/markdown-img-paste-20180803223737543.png)
+
+> 그림 4 : `Ours` vs `Neural Style (Gatys et al.)` vs  `CNNMRF (Li et al.)`    
+Neural Style과 CNNMRF의 결과 이미지에서는 모두 강한 왜곡을 발견할 수 있다.  
+`Neural Style`은 스타일 전송을 위한 segmantic context를 완전히 무시한다.   
+`CNNMRF`는 nearest neighbor search를 사용하기 때문에 참조 이미지의 텍스처 대부분을 무시하는 경향이 있다.  
+`우리의 방법`은 왜곡이 없고 텍스처를 의미적으로 일치시킨다.
+
+&nbsp;
+
+`그림 4`에서 두 기법 모두 **왜곡** 이 있다.
+
+`Neural Style`은 `spills over`까지 존재한다. (`CNNMRF`에도 있꾸만..)  
+
+위에서 설명한 것처럼 `CNNMRF`는 스타일을 부분적으로만 변형하기 때문에 중요한 부분을 무시할 수 있다.
+
+이에 비해 우리의 `photorealism regularization and segmantic segmentation`은 이러한 오점이 발생하는 것을 막는다. 사진으로 봐도 우리 것이 더 좋아보임!
+
+&nbsp;
+
+### 색상
+
+![](assets/markdown-img-paste-20180803225938740.png)
+
+> 그림 5 : 우리의 방법 vs Reinhard et al. vs Pitié  
+세가지 모두 왜곡은 없다.  
+하지만 ours는 **공간 변화에 따른 색상 변화** 를 두 기법보다 잘 나타낸다.
+
+`그림 5`에서 `우리의 방법`과 `이미지를 왜곡시키지 않는 global style transfer methods`를 비교한다.
+
+두 기법 모두 **전역적으로 색상 매핑을 수행** 하여 입력 이미지와 참조 이미지 사이의 색상 통계를 일치시킨다.
+
+부분적으로 변하는 색상 변환에는 한계가 있다.
+
+ours는 보다 세밀한 색상 변경을 할 수 있다.
+
+&nbsp;
+
+### Time Hallucination (시간 변환)
+
+![](assets/markdown-img-paste-20180803230004539.png)
+
+> 그림 6 : `Ours` vs `Shih et al.`  
+둘 다 시각적으로 만족스러운 결과를 생성한다.  
+그러나 우리 알고리즘은 단 한장의 참조 이미지만으로도 변환이 가능하다.
+
+`그림 6`에서 우리는 `Ours`를 `Shih et al.`와 비교한다.
+
+`Shih et al`는 `타임랩스 비디오`에서 관찰 된 색상 변화를 유추하는 기술인 반면, `Ours`는 참조 이미지의 스타일을 직접 재현하기 때문에 결과가 다르다.
+
+Q. 두 결과 모두 시각적으로 만족스러운데 어느 것이 더 유용하다고 생각합니까?
+
+A. 우리꺼!!
+
+1. `Shih의 환각`에는 전체 시간 경과 비디오가 필요하지만, `ours`는 참조 이미지 한개만으로도 충분하다.  
+
+2. `ours`은 시간 변환 이외의 다른 시나리오도 처리 할 수 있다.
+
+&nbsp;
+
+### 변환 실패한 사례들
+
+![](assets/markdown-img-paste-20180803230121315.png)
+
+> 그림 8 : 극단적인 불일치로 인한 실패 사례
+
+의미적으로 전혀 맞지 않는 참조 이미지를 넣으면 위의 결과처럼 개떡같이(?) 나온다.
+
+`Manual segmentation(수동 분할)`을 사용하면 이를 수정할 수 있다.
+
+&nbsp;
+
+### Manual segmentation (수동 분할)
+
+![](assets/markdown-img-paste-20180803230059158.png)
+
+> 그림 7 : **`Manual segmentation`** 향수병(a)과 불(b)을 합쳐서 (c)를 만드는 것이 가능하다.
+또, 사과들의(d, e) 질감을 변환시키는 것도 가능하다.
+
+`그림 7`에서는 `segmantic mask`를 제공함으로써 사용자가 전송 결과를 제어 할 수있는 방법을 보여줍니다. 이는 예술적으로 응용할 수 있다.
+
+또한, 향수병과 불은 서로 의미가 맞지 않아서 `semantic labeling` 이 불가능하지만 **`Manual segmentation`** 을 사용하면 처리가 가능하다.
+
+&nbsp;
+
+### 그밖에...
+
+
+|      | 보충자료 에서 제공되는  것들 |
+| :------------- | :------------- |
+| 1      | `Ours` vs `Wu et al.`  |
+| 2  | `semantic segmentation` 또는 `photorealism regularization` 만을 적용시킨 것  |
+| 3  | 노이즈나 고해상도 입력을 처리하기 위한 솔루션  |
+
+우리의 결과는 `NVIDIA Titan X GPU (two-stage optimization)` 에서 3 ~ 5분 내에 생성되었다.
+
+### User studies
 
 &nbsp;
 &nbsp;
